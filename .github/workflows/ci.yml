@@ -1,0 +1,25 @@
+name: dbt build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DBT_PROFILES_DIR: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Download the raw Olist CSVs (checksums verified)
+        run: python scripts/download_data.py
+      - name: Seed, run and test every model
+        run: dbt build
+      - name: Charts render from the marts
+        run: python scripts/make_charts.py

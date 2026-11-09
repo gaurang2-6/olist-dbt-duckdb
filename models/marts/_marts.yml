@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: One row per order with basket, payment, delivery timing and review score.
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: customer_unique_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_unique_id
+      - name: order_value
+        description: Items plus freight, in BRL.
+        tests: [not_null]
+      - name: days_late
+        description: Delivered date minus promised date; negative means early.
+      - name: is_late
+        tests: [not_null]
+
+  - name: fct_order_items
+    columns:
+      - name: order_item_key
+        tests: [unique, not_null]
+      - name: order_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+      - name: product_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+      - name: seller_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_sellers')
+                field: seller_id
+
+  - name: dim_customers
+    description: One row per person (customer_unique_id).
+    columns:
+      - name: customer_unique_id
+        tests: [unique, not_null]
+      - name: orders
+        tests: [not_null]
+
+  - name: dim_products
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+
+  - name: dim_sellers
+    columns:
+      - name: seller_id
+        tests: [unique, not_null]
+
+  - name: mart_monthly_kpis
+    columns:
+      - name: month
+        tests: [unique, not_null]
+
+  - name: mart_delivery_reviews
+    columns:
+      - name: delivery_bucket
+        tests: [unique, not_null]
+
+  - name: mart_category_performance
+    columns:
+      - name: category
+        tests: [unique, not_null]

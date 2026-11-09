@@ -1,0 +1,28 @@
+name: olist
+version: "1.0.0"
+profile: olist
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+vars:
+  raw_path: data/raw
+
+models:
+  olist:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  olist:
+    +schema: staging
+    product_category_name_translation:
+      +column_types:
+        product_category_name: varchar
+        product_category_name_english: varchar

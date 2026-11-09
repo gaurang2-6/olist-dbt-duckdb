@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: olist
+    description: Raw CSV exports of the Olist Brazilian e-commerce marketplace (Sep 2016 to Oct 2018).
+    meta:
+      external_location: "read_csv('{{ var(\"raw_path\") }}/olist_{name}_dataset.csv', header = true, all_varchar = true)"
+    tables:
+      - name: customers
+      - name: orders
+      - name: order_items
+      - name: order_payments
+      - name: order_reviews
+      - name: products
+      - name: sellers
